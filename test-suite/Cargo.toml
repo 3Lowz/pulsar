@@ -16,3 +16,5 @@ tokio = { workspace = true }
 log = { workspace = true }
 futures = { workspace = true }
 nix = { workspace = true }
+redis = { version = "0.25.4", features = ["json", "tokio-comp"] }
+redis_rs = "0.9.0"

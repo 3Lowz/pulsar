@@ -10,7 +10,7 @@ name = "pulsar"
 path = "src/lib.rs"
 
 [[bin]]
-name = "pulsar-exec"
+name = "pulsar-exec"                                                        
 path = "src/main.rs"
 
 [dependencies]
@@ -34,6 +34,8 @@ env_logger = { workspace = true }
 futures-util = { workspace = true }
 log = { workspace = true }
 nix = { workspace = true }
+redis = { version = "0.25.4", features = ["json", "tokio-comp"] }
+redis_rs = "0.9.0"
 rust-ini = { workspace = true }
 serde = { workspace = true }
 semver = { workspace = true, features = ["serde"] }
@@ -160,6 +162,8 @@ procfs = { version = "0.16.0", default-features = false }
 quote = "1.0.33"
 rand = { version = "0.8.5" }
 regex = "1.10.2"
+redis = { version = "0.25.4", features = ["json", "tokio-comp"] }
+redis_rs = "0.9.0"
 reqwest = { version = "0.11.23", default-features = false, features = [
     "blocking",
     "json",

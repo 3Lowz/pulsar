@@ -8,12 +8,14 @@ $ cargo build && sudo ./target/debug/examples/pulsar-extension-module pulsard
 
 By default our custom module will do nothing, but we can instruct it to warn
 about DNS queries to `exein.io`.
+
 ```
 pulsar config --set my-custom-module.forbidden_dns=exein.io
 dig exein.io
 ```
 
 The commands above will produce this output in the Pulsar daemon:
+
 ```
 Configuration changed: MyModuleConfig { print_events: false, forbidden_dns: Some("exein.io") }
 Event { header: Header { pid: 28745, is_threat: true, source: ModuleName("network-monitor"), timestamp: SystemTime { tv_sec: 1668160509, tv_ns
