@@ -544,7 +544,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "35ed6e9d84f0b51a7f52daf1c7d71dd136fd7a3f41a8462b8cdb8c78d920fad4"
 dependencies = [
  "bytes",
+ "futures-core",
  "memchr",
+ "pin-project-lite",
+ "tokio",
+ "tokio-util",
 ]
 
 [[package]]
@@ -2045,6 +2049,9 @@ dependencies = [
  "nix 0.27.1",
  "process-monitor",
  "pulsar-core",
+ "redis",
+ "redis-logger",
+ "redis_rs",
  "rules-engine",
  "rust-ini",
  "semver",
@@ -2121,6 +2128,49 @@ checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
  "getrandom",
 ]
+
+[[package]]
+name = "redis"
+version = "0.25.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e0d7a6955c7511f60f3ba9e86c6d02b3c3f144f8c24b288d1f4e18074ab8bbec"
+dependencies = [
+ "async-trait",
+ "bytes",
+ "combine",
+ "futures-util",
+ "itoa",
+ "percent-encoding",
+ "pin-project-lite",
+ "ryu",
+ "serde",
+ "serde_json",
+ "sha1_smol",
+ "socket2",
+ "tokio",
+ "tokio-util",
+ "url",
+]
+
+[[package]]
+name = "redis-logger"
+version = "0.8.1"
+dependencies = [
+ "bpf-common",
+ "log",
+ "pulsar-core",
+ "redis",
+ "redis_rs",
+ "serde_json",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
+name = "redis_rs"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "44e5387dc28a58b9bc0a51acf7838610f459dea43335f9bc1f198882ff633304"
 
 [[package]]
 name = "redox_syscall"
@@ -2501,6 +2551,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "sha1_smol"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bbfa15b3dddfee50a0fff136974b3e1bde555604ba463834a7eb7deb6417705d"
+
+[[package]]
 name = "signal-hook"
 version = "0.3.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2749,6 +2805,8 @@ dependencies = [
  "network-monitor",
  "nix 0.27.1",
  "process-monitor",
+ "redis",
+ "redis_rs",
  "tokio",
 ]
 

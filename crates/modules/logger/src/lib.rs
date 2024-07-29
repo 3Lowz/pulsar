@@ -66,7 +66,7 @@ async fn logger_task(
                     logger = Logger { syslog: None, ..logger };
                 }
             },
-        }
+        }   
     }
 }
 
@@ -173,6 +173,7 @@ impl Logger {
 
     fn process(&mut self, event: &Event) -> Result<(), LoggerError> {
         if event.header().threat.is_some() {
+            println!("Threat found");
             let json_event = OnceCell::new();
             let json_event = || -> Result<&String, LoggerError> {
                 json_event

@@ -96,6 +96,8 @@ pub fn modules() -> Vec<Box<dyn TaskLauncher>> {
         desktop_notifier::module(),
         #[cfg(feature = "smtp-notifier")]
         smtp_notifier::module(),
+        #[cfg(feature = "redis-logger")]
+        redis_logger::module(),
     ]
     .into_iter()
     .map(|x| Box::new(x) as Box<dyn TaskLauncher>)

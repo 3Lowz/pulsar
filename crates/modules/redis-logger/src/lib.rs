@@ -23,6 +23,7 @@ use redis::{
   // Value //, RedisError, ToRedisArgs,
 };
 use serde_json::json;
+use log;
 
   // struct MyJson(String);
 
@@ -53,11 +54,11 @@ pub fn module() -> PulsarModule {
     MODULE_NAME,
     Version::parse(env!("CARGO_PKG_VERSION")).unwrap(),
     true,
-    module_task,
+    redis_logger,
   )
 }
 
-async fn module_task(
+async fn redis_logger(
   ctx: ModuleContext,
   mut shutdown: ShutdownSignal,
 ) -> Result<CleanExit, ModuleError> {
@@ -70,12 +71,14 @@ async fn module_task(
   let r_client= Client::open("redis://127.0.0.1/")?;
   let mut r_connection = r_client.get_connection()?;
 
+
   // Ping test  
   let value: String = String::from("vvvalue");  
   match r_connection.json_set::<String, String, String, String>("test".to_string(), " newKey".to_string(), &json!({"iteeeem": value}).to_string()) {
     Ok(..) => (),
     Err(err) => println!("Error is: {:?}", err)
   };
+  log::info!("Redis connected");
   // end Ping test
 
   // TODO: create the proper indexKey   
@@ -83,43 +86,31 @@ async fn module_task(
 
   loop {
     tokio::select! {
-      event = receiver.recv() => {
-        let event: Arc<Event> = event?;
+      r = shutdown.recv() => return r,
+      msg = receiver.recv() => {
+        let event = msg?;
         
         if config.print_events {
           println!("{event:?}");
         }
-        // let ev = Arc::downgrade(&event);
 
-        // println!("here we are");
-        let header = event.header(); 
-
-        match header.threat {
-          Some(_) => println!("_____threat found"),
-          None => (),
-        }
-        
-        let test: bool = event.header().threat.is_some();
         // println!("test is {}", test);
 
-        if let Some(Threat {
-          source,
-          description,
-          extra: _,
-        }) = &event.header().threat {  
+        if event.header().threat.is_some() {  
 
-          println!("{:?}", header);
+          // println!("{:?}", header);
           println!("Found threat");
   
-
-          let header_string: String = serde_json::to_string(header)?;
-          let payload: String = event.payload().to_string();
+          // let header = event.header();  
+          // let header_string: String = serde_json::to_string(header)?;
+          // let payload: String = event.payload().to_string();
           let json: String = json!({
-            "payload": payload,
-            "header": header_string,
-            "source": source,
-            "description": description,
+            "payload": "payload",
+            "header": "header_string",
+            "source": "source",
+            "description": "description",
           }).to_string();
+          // let json = serde_json::to_string(&event);
 
           // let res: RedisResult<bool> = r_connection.json_set("myEventKey", "cP", &"{event:?}");
           // println!("Written cb: {res:?}");   
@@ -128,27 +119,24 @@ async fn module_task(
             Err(err) => println!("Error occoured: {err:?}"),
           }
 
-        } else {
-          let source = &header.source;
-
-          let header_string: String = serde_json::to_string(header)?;
-          let payload: String = event.payload().to_string();
-
-          let json: String = json!({
-            "payload": payload,
-            "header": header_string,
-            "source": source,
-          }).to_string();
-          
-          match r_connection.json_arr_append::<String, String, String, Vec<i64> >("events".to_string(), "$".to_string(), &json) {
-            Ok(_) => (),
-            Err(err) => println!("Error occoured: {err:?}"),
-          }
         }
-      },
-      r = shutdown.recv() => {
-        println!("Stopping");
-        return r
+        //  else {
+        //   let source = &header.source;
+
+        //   let header_string: String = serde_json::to_string(header)?;
+        //   let payload: String =   event.payload().to_string();
+
+        //   let json: String = json!({
+        //     "payload": payload,
+        //     "header": header_string,
+        //     "source": source,
+        //   }).to_string();
+          
+        //   match r_connection.json_arr_append::<String, String, String, Vec<i64> >("events".to_string(), "$".to_string(), &json) {
+        //     Ok(_) => (),
+        //     Err(err) => println!("Error occoured: {err:?}"),
+        //   } 
+        // }
       },
     }
   }
